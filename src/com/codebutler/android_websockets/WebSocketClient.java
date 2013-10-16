@@ -19,6 +19,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URI;
 import java.security.KeyManagementException;
@@ -137,8 +138,14 @@ public class WebSocketClient {
                     Log.d(TAG, "WebSocket EOF!", ex);
                     mListener.onDisconnect(0, "EOF");
                     mConnected = false;
-
+                    
+                } catch (ConnectException ex) {
+                    Log.d(TAG, "Connection Refused!", ex);
+                    mListener.onDisconnect(0, "Connection Refused");
+                    mConnected = false;
+                    
                 } catch (SSLException ex) {
+
                     // Connection reset by peer
                     Log.d(TAG, "Websocket SSL error!", ex);
                     mListener.onDisconnect(0, "SSL");
